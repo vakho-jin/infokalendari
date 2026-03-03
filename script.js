@@ -260,10 +260,7 @@ function renderCategory(cat, items, key) {
   if (catOpen[cat.key]) section.classList.add("is-open");
 }
 
-function buildEventCard(h, sig) {
-  const card = document.createElement("div");
-  card.className = "event-card";
-
+function makeImgWrap(query, sig, label) {
   const imgWrap = document.createElement("div");
   imgWrap.className = "ev-img";
 
@@ -272,16 +269,31 @@ function buildEventCard(h, sig) {
   ph.textContent = "✦";
 
   const img = document.createElement("img");
-  img.alt     = h.name || "";
+  img.alt     = label || "";
   img.loading = "lazy";
-  img.src     = imgUrl(h.img || h.name, sig);
+  img.src     = imgUrl(query, sig);
   img.addEventListener("load",  () => img.classList.add("loaded"));
   img.addEventListener("error", () => { img.style.display = "none"; });
   imgWrap.append(ph, img);
 
-  fetchWikimediaImg(h.img || h.name).then(src => {
+  fetchWikimediaImg(query).then(src => {
     if (src) { const t = new Image(); t.onload = () => { img.src = src; }; t.src = src; }
   });
+
+  return imgWrap;
+}
+
+function buildEventCard(h, sig) {
+  const card = document.createElement("div");
+  card.className = "event-card";
+
+  // Левое изображение — по имени/основному запросу
+  const imgLeft = makeImgWrap(h.img || h.name, sig, h.name);
+
+  // Правое изображение — если img2 указан, другой запрос; иначе то же самое что левое
+  const rightQuery = h.img2 || h.img || h.name;
+  const sig2 = h.img2 ? (sig * 1000003) >>> 0 : sig;
+  const imgRight = makeImgWrap(rightQuery, sig2, h.name);
 
   const body = document.createElement("div");
   body.className = "ev-body";
@@ -295,7 +307,7 @@ function buildEventCard(h, sig) {
   fact.textContent = h.fact || "";
 
   body.append(name, fact);
-  card.append(imgWrap, body);
+  card.append(imgLeft, body, imgRight);
   return card;
 }
 
