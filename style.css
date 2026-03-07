@@ -465,6 +465,32 @@ body {
   transition: opacity .18s, transform .18s, color .3s;
 }
 
+.day-of-year {
+  margin: 14px 28px 0;
+  font-size: .78rem;
+  font-weight: 400;
+  color: var(--ink-2);
+  font-style: italic;
+  line-height: 1.6;
+  padding: 11px 18px;
+  background: var(--accent-bg);
+  border: 1px solid rgba(99,102,241,.13);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px var(--accent-glow);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+  transition: opacity .18s, color .3s, background .3s;
+}
+
+.day-of-year span:last-child {
+  color: var(--ink-3);
+  font-size: .73rem;
+}
+
+
+
 /* ── Holidays section ────────────────────────────────────────────── */
 .holidays { transition: opacity .18s; }
 
@@ -634,8 +660,8 @@ body {
   color: var(--ink-3);
   transition: color .3s;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
+  /* -webkit-line-clamp: 5;
+  line-clamp: 5; */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -788,6 +814,7 @@ body {
 .fade-out .day-num,
 .fade-out .month-yr,
 .fade-out .weekday  { opacity: 0; transform: translateY(-5px); }
+.fade-out .day-of-year { opacity: 0; }
 .fade-out .holidays { opacity: 0; }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -808,8 +835,8 @@ body {
   .layout { grid-template-columns: 200px 1fr 200px; gap: 14px; }
 
   .ev-fact {
-    -webkit-line-clamp: 7;
-    line-clamp: 7;
+    /* -webkit-line-clamp: 6;
+    line-clamp: 6; */
   }
   .event-card {
     grid-template-columns: 64px 1fr;
@@ -832,8 +859,8 @@ body {
   }
 
   .ev-fact {
-    -webkit-line-clamp: 6;
-    line-clamp: 6;
+    /* -webkit-line-clamp: 7;
+    line-clamp: 7; */
   }
     .event-card {
     grid-template-columns: 64px 1fr;
