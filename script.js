@@ -423,12 +423,6 @@ document.getElementById("mc-next").addEventListener("click", () => {
   renderMiniCal();
 });
 
-document.addEventListener("keydown", e => {
-  if (e.key === "ArrowLeft")          step(-1);
-  if (e.key === "ArrowRight")         step(+1);
-  if (e.key === "t" || e.key === "T") goToday();
-});
-
 /* ─── ინიციალიზაცია ── */
 update(current, true);
 
