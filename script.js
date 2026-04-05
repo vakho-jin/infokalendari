@@ -359,7 +359,7 @@ function buildEventCard(h, sig) {
 
   const factEl = document.createElement("div");
   factEl.className   = "ev-fact";
-  factEl.textContent = h.fact || "";
+  factEl.innerHTML = h.fact || "";
 
   evBody.append(nameEl, factEl);
   evCard.append(imgLeft, evBody, imgRight);
@@ -401,7 +401,12 @@ function renderMiniCal() {
     if (dow === 0 || dow === 6) btn.classList.add("wknd");
     if (k === todayKey)         btn.classList.add("is-today");
     if (k === selKey)           btn.classList.add("selected");
-    if (HOLIDAY_KEYS.has(k))   btn.classList.add("has-holiday");
+    
+    // შემოწმება: არის თუ არა დღესასწაული (ფიქსირებული ან მცოცავი)
+    const floatHolidays = getFloatingHolidays(mcYear);
+    if (HOLIDAY_KEYS.has(k) || floatHolidays.hasOwnProperty(k)) {
+      btn.classList.add("has-holiday");
+    }
 
     btn.addEventListener("click", () => jumpTo(dt));
     mcGrid.appendChild(btn);
@@ -426,7 +431,34 @@ async function update(d, instant) {
   }
 
   const key  = dateKey(d);
-  const data = await loadDay(key);
+  let data   = await loadDay(key);
+
+  // მცოცავი დღესასწაულების ჩამატება
+  const floatHolidays = getFloatingHolidays(d.getFullYear());
+  if (floatHolidays[key]) {
+    if (!data) data = { holidays: [], history: [], born: [], died: [] };
+    
+    // შევამოწმოთ, არის თუ არა ეს დღესასწაული უკვე დამატებული
+    const floatName = floatHolidays[key].name;
+    let alreadyExists = false;
+    
+    if (Array.isArray(data)) {
+      alreadyExists = data.some(h => h.name === floatName);
+    } else if (data.holidays && Array.isArray(data.holidays)) {
+      alreadyExists = data.holidays.some(h => h.name === floatName);
+    }
+    
+    if (!alreadyExists) {
+      if (Array.isArray(data)) {
+        // თუ მონაცემები ძველი ფორმატითაა (მასივი)
+        data.unshift(floatHolidays[key]);
+      } else {
+        // თუ ახალი ფორმატითაა (ობიექტი კატეგორიებით)
+        if (!data.holidays) data.holidays = [];
+        data.holidays.unshift(floatHolidays[key]);
+      }
+    }
+  }
 
   renderDate(d);
   renderHolidays(key, data);
